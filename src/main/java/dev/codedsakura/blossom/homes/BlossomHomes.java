@@ -59,11 +59,15 @@ public class BlossomHomes implements ModInitializer {
         homeController = new HomeController();
 
         BlossomLib.addCommand(literal("home")
-                .requires(Permissions.require("blossom.home", true))
-                .executes(this::runHomeDefault)
-                .then(argument("name", StringArgumentType.string())
-                        .suggests(homeController)
-                        .executes(this::runHomeNamed)));
+        .requires(Permissions.require("blossom.home", true))
+        .executes(ctx -> runHome(ctx, CONFIG.defaultHome)) 
+        .then(argument("name", StringArgumentType.string())
+                .suggests(homeController)
+                .executes(ctx -> {
+                    String homeName = StringArgumentType.getString(ctx, "name");
+                    return runHome(ctx, homeName); 
+                })));
+
 
 
         RequiredArgumentBuilder<ServerCommandSource, String> addHomeNamePosDim =
